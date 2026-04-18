@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../widgets/disease_history_card.dart';
@@ -13,7 +13,8 @@ class DiseaseDetectionTab extends StatefulWidget {
 }
 
 class _DiseaseDetectionTabState extends State<DiseaseDetectionTab> {
-  File? _selectedImage;
+  XFile? _selectedImage;
+  Uint8List? _selectedImageBytes;
   final ImagePicker _picker = ImagePicker();
   bool _isAnalyzing = false;
   DiseaseAnalysisResult? _analysisResult;
@@ -431,12 +432,14 @@ class _DiseaseDetectionTabState extends State<DiseaseDetectionTab> {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          child: Image.file(
-            _selectedImage!,
-            width: double.infinity,
-            height: double.infinity,
-            fit: BoxFit.cover,
-          ),
+          child: _selectedImageBytes != null
+              ? Image.memory(
+                  _selectedImageBytes!,
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                )
+              : const SizedBox.shrink(),
         ),
         Positioned(
           top: 12,
@@ -488,9 +491,11 @@ class _DiseaseDetectionTabState extends State<DiseaseDetectionTab> {
       );
 
       if (image != null) {
+        final bytes = await image.readAsBytes();
         setState(() {
-          _selectedImage = File(image.path);
-          _analysisResult = null; // Clear previous results
+          _selectedImage = image;
+          _selectedImageBytes = bytes;
+          _analysisResult = null;
         });
       }
     } catch (e) {
@@ -507,9 +512,11 @@ class _DiseaseDetectionTabState extends State<DiseaseDetectionTab> {
       );
 
       if (image != null) {
+        final bytes = await image.readAsBytes();
         setState(() {
-          _selectedImage = File(image.path);
-          _analysisResult = null; // Clear previous results
+          _selectedImage = image;
+          _selectedImageBytes = bytes;
+          _analysisResult = null;
         });
       }
     } catch (e) {
@@ -546,6 +553,7 @@ class _DiseaseDetectionTabState extends State<DiseaseDetectionTab> {
   void _removeImage() {
     setState(() {
       _selectedImage = null;
+      _selectedImageBytes = null;
       _analysisResult = null;
     });
   }
@@ -594,7 +602,7 @@ class _DiseaseDetectionTabState extends State<DiseaseDetectionTab> {
       confidence: 85,
       description: 'Early blight is a common fungal disease that affects tomato plants. It appears as dark spots with concentric rings on lower leaves.',
       treatment: 'Apply copper-based fungicides every 7-10 days. Remove infected leaves. Improve air circulation.',
-      imagePath: _selectedImage!.path,
+      imagePath: 'assets/detection/leaf.png',
     );
   }
 

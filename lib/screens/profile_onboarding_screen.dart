@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,7 +25,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
   // User Information
   final TextEditingController _phoneController = TextEditingController();
   String _profilePicture = '';
-  File? _selectedImage;
+  XFile? _selectedImage;
+  Uint8List? _selectedImageBytes;
   String _selectedCountryCode = '+1';
   String _selectedFlag = '🇺🇸';
 
@@ -126,8 +127,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
 
     if (pickedFile == null) return;
 
-    final File file = File(pickedFile.path);
-
     try {
       if (_auth.currentUser == null) {
         showNotificationBanner(context, 'User not authenticated.');
@@ -140,13 +139,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
         builder: (context) => const Center(child: CircularProgressIndicator()),
       );
 
-      final String? imageUrl = await _cloudinaryService.uploadImage(file, folder: 'profile_pictures');
+      final String? imageUrl = await _cloudinaryService.uploadImage(pickedFile, folder: 'profile_pictures');
+      final bytes = await pickedFile.readAsBytes();
 
       if (mounted) Navigator.pop(context);
 
       if (imageUrl != null) {
         setState(() {
-          _selectedImage = file;
+          _selectedImage = pickedFile;
+          _selectedImageBytes = bytes;
           _profilePicture = imageUrl;
         });
         showNotificationBanner(context, 'Profile picture uploaded!', isSuccess: true);
@@ -508,8 +509,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
                 border: Border.all(color: colorScheme.primary.withOpacity(0.2), width: 3),
               ),
               child: ClipOval(
-                child: _selectedImage != null
-                    ? Image.file(_selectedImage!, fit: BoxFit.cover)
+                child: _selectedImageBytes != null
+                    ? Image.memory(_selectedImageBytes!, fit: BoxFit.cover)
                     : Container(
                   decoration: BoxDecoration(
                     color: Colors.grey.shade100,

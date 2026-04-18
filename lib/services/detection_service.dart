@@ -1,12 +1,12 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 class VisionApiService {
   final String _apiKey = 'AIzaSyDGwx8_Le86bQ8wAi4dB7s5ebeCA88N16M';
   final String _visionApiUrl = 'https://vision.googleapis.com/v1/images:annotate';
 
-  Future<Map<String, dynamic>> analyzeImage(File imageFile) async {
+  Future<Map<String, dynamic>> analyzeImage(XFile imageFile) async {
     try {
       final List<int> imageBytes = await imageFile.readAsBytes();
       final String base64Image = base64Encode(imageBytes);
@@ -53,7 +53,7 @@ class VisionApiService {
   }
 
 
-  Future<String> detectCropCondition(File imageFile) async {
+  Future<String> detectCropCondition(XFile imageFile) async {
     try {
       final visionResponse = await analyzeImage(imageFile);
 

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 class DiseaseHistoryCard extends StatelessWidget {
@@ -123,16 +121,8 @@ class DiseaseHistoryCard extends StatelessWidget {
         },
       );
     } else if (path.startsWith('/')) {
-      // Local file path
-      return Image.file(
-        File(path),
-        width: 60,
-        height: 60,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return _buildDefaultImage();
-        },
-      );
+      // Local file paths are not supported on web; show placeholder
+      return _buildDefaultImage();
     } else {
       return _buildDefaultImage();
     }

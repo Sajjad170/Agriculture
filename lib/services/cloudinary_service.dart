@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:cloudinary_sdk/cloudinary_sdk.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CloudinaryService {
   final Cloudinary _cloudinary;
@@ -11,23 +11,12 @@ class CloudinaryService {
           cloudName: 'dfbyxmk6f',
         );
 
-  /// Uploads an image to Cloudinary and returns the secure URL.
-  Future<String?> uploadImage(File imageFile, {String folder = 'profiles'}) async {
+  /// Uploads an image (XFile) to Cloudinary and returns the secure URL.
+  Future<String?> uploadImage(XFile imageFile, {String folder = 'profiles'}) async {
     try {
-      final response = await _cloudinary.uploadResource(
-        CloudinaryUploadResource(
-          filePath: imageFile.path,
-          folder: folder,
-          resourceType: CloudinaryResourceType.image,
-        ),
-      );
-
-      if (response.isSuccessful) {
-        return response.secureUrl;
-      } else {
-        print('Cloudinary upload failed: ${response.error}');
-        return null;
-      }
+      final bytes = await imageFile.readAsBytes();
+      return await uploadImageFromBytes(bytes.toList(),
+          folder: folder, fileName: imageFile.name);
     } catch (e) {
       print('Cloudinary upload error: $e');
       return null;

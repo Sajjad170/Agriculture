@@ -15,9 +15,18 @@ class AuthService {
   // Check if user is logged in
   bool get isLoggedIn => currentUser != null;
 
-  // Restore session when app starts
+  // Restore session when app starts — waits for Firebase Auth to finish loading
   Future<bool> restoreSession() async {
-    return currentUser != null;
+    try {
+      // Wait for Firebase Auth to restore persisted session (max 5s)
+      final user = await _auth.authStateChanges().first.timeout(
+        const Duration(seconds: 5),
+        onTimeout: () => null,
+      );
+      return user != null;
+    } catch (_) {
+      return currentUser != null;
+    }
   }
 
   // Sign up with email and password

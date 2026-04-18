@@ -97,8 +97,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   Future<void> _checkUserSession() async {
     bool isLoggedIn = await AuthService().restoreSession();
 
-    // Extended delay for premium animation experience
-    await Future.delayed(const Duration(milliseconds: 3500));
+    // Brief delay for animation experience (auth check already takes some time)
+    await Future.delayed(const Duration(milliseconds: 1500));
 
     if (mounted) {
       Navigator.of(context).pushReplacement(

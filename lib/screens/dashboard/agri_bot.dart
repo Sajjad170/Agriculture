@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -110,7 +109,7 @@ class _SmartFarmAssistantState extends State<SmartFarmAssistant> {
     _scrollToBottom();
 
     if (imagePath != null) {
-      _analyzeImage(File(imagePath));
+      _analyzeImage(XFile(imagePath));
     } else {
       _getAIResponse(text);
     }
@@ -151,7 +150,7 @@ class _SmartFarmAssistantState extends State<SmartFarmAssistant> {
     }
   }
 
-  Future _analyzeImage(File imageFile) async {
+  Future _analyzeImage(XFile imageFile) async {
     setState(() {
       _isAnalyzing = true;
     });
@@ -446,11 +445,13 @@ class _SmartFarmAssistantState extends State<SmartFarmAssistant> {
                           if (message.imagePath != null)
                             Stack(
                               children: [
-                                Image.file(
-                                  File(message.imagePath!),
+                                Image.network(
+                                  message.imagePath!,
                                   width: double.infinity,
                                   height: 200,
                                   fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.broken_image, size: 48),
                                 ),
                                 Positioned(
                                   top: 8,

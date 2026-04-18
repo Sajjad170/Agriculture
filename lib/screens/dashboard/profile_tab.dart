@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
@@ -78,8 +77,7 @@ class _ProfileTabState extends State<ProfileTab> {
 
       setState(() => _isUploading = true);
 
-      final imageFile = File(image.path);
-      final imageUrl = await _cloudinaryService.uploadImage(imageFile, folder: 'profiles');
+      final imageUrl = await _cloudinaryService.uploadImage(image, folder: 'profiles');
 
       if (imageUrl != null && _profile != null) {
         final updatedProfile = UserProfile(
