@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "37745958186",
+    "project_id": "agriculture-2f189",
+    "storage_bucket": "agriculture-2f189.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:37745958186:android:13ba6742553aaebf495253",
+        "android_client_info": {
+          "package_name": "com.example.agriculture"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOJc3hdAN_-Rei2yo1ChXiZqJFr27eGV8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:37745958186:android:0eafa8bf1928cc2b495253",
+        "android_client_info": {
+          "package_name": "com.example.moonguard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOJc3hdAN_-Rei2yo1ChXiZqJFr27eGV8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
