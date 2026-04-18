@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriTrack — Farmer Portal</title>
+  <link rel="stylesheet" href="/css/farmer.css" />
+</head>
+<body>
+  <div id="app" style="display:none">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">🌿</div>
+        <div>
+          <div class="logo-title">AgriTrack</div>
+          <div class="logo-sub">Farmer Portal</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <a class="nav-item active" data-page="dashboard" href="#">🏠 <span>Dashboard</span></a>
+        <a class="nav-item" data-page="shop" href="#">🛒 <span>Shop</span></a>
+        <a class="nav-item" data-page="pesticides" href="#">🧪 <span>Pesticides</span></a>
+        <a class="nav-item" data-page="fertilizers" href="#">🌿 <span>Fertilizers</span></a>
+        <a class="nav-item" data-page="cart" href="#">🛒 <span>Cart <span id="cart-count" class="cart-badge"></span></span></a>
+        <a class="nav-item" data-page="orders" href="#">📦 <span>My Orders</span></a>
+        <a class="nav-item" data-page="market" href="#">📈 <span>Market Rates</span></a>
+        <a class="nav-item" data-page="ai" href="#">🤖 <span>AI Assistant</span></a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar" id="user-avatar">F</div>
+          <div><div class="user-name" id="user-name">Farmer</div><div class="user-role">Farmer Account</div></div>
+        </div>
+        <button class="logout-btn" id="logout-btn">🚪 Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger" id="hamburger">☰</button>
+          <div class="page-title" id="page-title">Dashboard</div>
+        </div>
+        <div class="topbar-right">
+          <button class="theme-btn" id="theme-toggle">🌙</button>
+          <button class="cart-btn" onclick="navigate('cart')">
+            🛒 Cart <span id="cart-count-top" class="cart-badge-top"></span>
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+
+        <!-- DASHBOARD -->
+        <div id="page-dashboard" class="page active">
+          <div class="welcome-banner">
+            <div>
+              <h2>Assalam-o-Alaikum, <span id="welcome-name">Farmer</span>! 👋</h2>
+              <p>Welcome to AgriTrack — Pakistan's Smart Agriculture Platform</p>
+            </div>
+            <div class="welcome-actions">
+              <button class="btn btn-white" onclick="navigate('shop')">Browse Shop →</button>
+              <button class="btn btn-outline-white" onclick="navigate('ai')">🤖 AI Assistant</button>
+            </div>
+          </div>
+          <div class="dash-grid">
+            <div class="dash-card" onclick="navigate('orders')">
+              <div class="dash-icon">📦</div>
+              <div class="dash-value" id="dash-orders">—</div>
+              <div class="dash-label">My Orders</div>
+            </div>
+            <div class="dash-card" onclick="navigate('shop')">
+              <div class="dash-icon">🧪</div>
+              <div class="dash-value" id="dash-products">—</div>
+              <div class="dash-label">Products Available</div>
+            </div>
+            <div class="dash-card" onclick="navigate('market')">
+              <div class="dash-icon">📈</div>
+              <div class="dash-value" id="dash-rates">—</div>
+              <div class="dash-label">Market Rates</div>
+            </div>
+            <div class="dash-card" onclick="navigate('cart')">
+              <div class="dash-icon">🛒</div>
+              <div class="dash-value" id="dash-cart">—</div>
+              <div class="dash-label">Items in Cart</div>
+            </div>
+          </div>
+          <div class="dash-row">
+            <div class="section-card">
+              <div class="section-header"><h3>Latest Market Rates 📈</h3><button class="btn-link" onclick="navigate('market')">See All →</button></div>
+              <div id="mini-market"></div>
+            </div>
+            <div class="section-card">
+              <div class="section-header"><h3>My Recent Orders 📦</h3><button class="btn-link" onclick="navigate('orders')">See All →</button></div>
+              <div id="mini-orders"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SHOP (ALL PRODUCTS) -->
+        <div id="page-shop" class="page">
+          <div class="shop-header">
+            <div class="search-bar">
+              <span>🔍</span>
+              <input type="text" id="shop-search" placeholder="Search products..." />
+            </div>
+            <div class="filter-tabs">
+              <button class="filter-btn active" onclick="setShopFilter('all',this)">All</button>
+              <button class="filter-btn" onclick="setShopFilter('pesticide',this)">🧪 Pesticides</button>
+              <button class="filter-btn" onclick="setShopFilter('fertilizer',this)">🌿 Fertilizers</button>
+            </div>
+          </div>
+          <div class="products-grid" id="shop-grid"></div>
+        </div>
+
+        <!-- PESTICIDES -->
+        <div id="page-pesticides" class="page">
+          <div class="section-intro">
+            <h2>🧪 Pesticides & Sprays</h2>
+            <p>High-quality pesticides for effective crop protection in Pakistan</p>
+          </div>
+          <div class="products-grid" id="pesticides-grid"></div>
+        </div>
+
+        <!-- FERTILIZERS -->
+        <div id="page-fertilizers" class="page">
+          <div class="section-intro">
+            <h2>🌿 Fertilizers</h2>
+            <p>Premium fertilizers to boost your crop yield and soil health</p>
+          </div>
+          <div class="products-grid" id="fertilizers-grid"></div>
+        </div>
+
+        <!-- CART -->
+        <div id="page-cart" class="page">
+          <div class="cart-layout">
+            <div class="cart-items-section">
+              <h3 class="section-title">🛒 Your Cart</h3>
+              <div id="cart-items-list"></div>
+            </div>
+            <div class="cart-summary" id="cart-summary">
+              <h3 class="section-title">Order Summary</h3>
+              <div id="cart-summary-details"></div>
+              <button class="btn btn-primary btn-block" id="checkout-btn" onclick="showCheckout()">Proceed to Checkout →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHECKOUT -->
+        <div id="page-checkout" class="page">
+          <h3 class="section-title">📋 Checkout</h3>
+          <div class="checkout-layout">
+            <div class="checkout-form-section">
+              <div class="checkout-block">
+                <h4>👤 Your Details</h4>
+                <div class="form-row">
+                  <div class="form-group"><label>Full Name *</label><input type="text" id="billing-name" /></div>
+                  <div class="form-group"><label>Phone Number *</label><input type="tel" id="farmer-phone" placeholder="+92 300 0000000" /></div>
+                </div>
+                <div class="form-group"><label>Email *</label><input type="email" id="farmer-email" /></div>
+              </div>
+              <div class="checkout-block">
+                <h4>📍 Shipping Address</h4>
+                <div class="form-group"><label>Street / Village Address *</label><input type="text" id="shipping-address" placeholder="House #, Street, Village/Town" /></div>
+                <div class="form-row">
+                  <div class="form-group"><label>City *</label><input type="text" id="shipping-city" placeholder="Lahore, Faisalabad..." /></div>
+                  <div class="form-group"><label>Province</label><input type="text" id="shipping-province" placeholder="Punjab, Sindh..." /></div>
+                </div>
+              </div>
+              <div class="checkout-block">
+                <h4>💳 Payment Method</h4>
+                <div class="payment-options">
+                  <label class="payment-option">
+                    <input type="radio" name="payment" value="JazzCash" checked />
+                    <div class="payment-card">
+                      <div class="payment-logo jazz">Jazz<br><span>Cash</span></div>
+                      <div><strong>JazzCash</strong><p>Send payment to mobile wallet</p></div>
+                    </div>
+                  </label>
+                  <label class="payment-option">
+                    <input type="radio" name="payment" value="Easypaisa" />
+                    <div class="payment-card">
+                      <div class="payment-logo easy">Easy<br><span>paisa</span></div>
+                      <div><strong>Easypaisa</strong><p>Send payment to mobile wallet</p></div>
+                    </div>
+                  </label>
+                  <label class="payment-option">
+                    <input type="radio" name="payment" value="BankTransfer" />
+                    <div class="payment-card">
+                      <div class="payment-logo bank">🏦</div>
+                      <div><strong>Bank Transfer</strong><p>Direct bank account transfer</p></div>
+                    </div>
+                  </label>
+                </div>
+                <div class="payment-instructions" id="payment-instructions"></div>
+              </div>
+              <div class="checkout-block">
+                <h4>📸 Upload Payment Screenshot *</h4>
+                <p class="hint-text">After sending payment, upload screenshot as proof</p>
+                <input type="file" id="payment-screenshot" accept="image/*" class="file-input" />
+              </div>
+            </div>
+            <div class="checkout-summary">
+              <h4>Order Summary</h4>
+              <div id="checkout-items"></div>
+              <div class="checkout-total" id="checkout-total"></div>
+              <button class="btn btn-primary btn-block" id="place-order-btn" onclick="placeOrder()">🛒 Place Order</button>
+              <button class="btn btn-ghost btn-block" onclick="navigate('cart')" style="margin-top:10px">← Back to Cart</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MY ORDERS -->
+        <div id="page-orders" class="page">
+          <h3 class="section-title">📦 My Orders</h3>
+          <div id="my-orders-list"></div>
+        </div>
+
+        <!-- MARKET RATES -->
+        <div id="page-market" class="page">
+          <div class="market-header">
+            <h2>📈 Live Market Rates</h2>
+            <p>Today's crop prices — Pakistan Markets (PKR)</p>
+          </div>
+          <div class="market-grid" id="market-grid"></div>
+        </div>
+
+        <!-- AI ASSISTANT -->
+        <div id="page-ai" class="page">
+          <div class="ai-header">
+            <div class="ai-icon">🤖</div>
+            <h2>AI Agriculture Assistant</h2>
+            <p>Get smart recommendations for your crops — pesticides, fertilizers, and expert tips</p>
+          </div>
+          <div class="ai-layout">
+            <div class="ai-form-card">
+              <h4>🌱 Tell us about your crop</h4>
+              <div class="form-group">
+                <label>Crop Type *</label>
+                <select id="ai-crop">
+                  <option value="">Select crop...</option>
+                  <option>Wheat</option>
+                  <option>Rice</option>
+                  <option>Cotton</option>
+                  <option>Maize</option>
+                  <option>Sugarcane</option>
+                  <option>Vegetables</option>
+                  <option>Fruit Trees</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Problem / Disease 🐛</label>
+                <input type="text" id="ai-problem" placeholder="e.g. yellowing leaves, aphids, rust, weed..." />
+              </div>
+              <div class="form-group">
+                <label>Describe the issue (optional)</label>
+                <textarea id="ai-desc" rows="3" placeholder="Describe what you see: leaf color, spots, insects..."></textarea>
+              </div>
+              <button class="btn btn-primary btn-block" onclick="getAIRecommendation()">🔍 Get Recommendation</button>
+            </div>
+            <div class="ai-result-card" id="ai-result" style="display:none">
+              <div class="ai-result-header">
+                <span class="ai-confidence" id="ai-confidence"></span>
+                <h4>AI Recommendation</h4>
+              </div>
+              <div class="ai-tip" id="ai-tip"></div>
+              <div class="ai-products">
+                <div class="ai-product-card" id="ai-pesticide"></div>
+                <div class="ai-product-card" id="ai-fertilizer"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Quick tips -->
+          <div class="ai-tips-section">
+            <h4>💡 General Farming Tips</h4>
+            <div class="tips-grid">
+              <div class="tip-card">🌱<strong>Soil Health</strong><p>Test your soil pH before each season. Optimal pH for wheat is 6.0-7.5</p></div>
+              <div class="tip-card">💧<strong>Water Management</strong><p>Irrigate wheat at tillering, jointing, flowering, and grain filling stages</p></div>
+              <div class="tip-card">📅<strong>Timing</strong><p>Apply fertilizer at recommended growth stages for maximum efficiency</p></div>
+              <div class="tip-card">🌡️<strong>Weather</strong><p>Spray pesticides in early morning or evening. Avoid spraying before rain</p></div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Product Detail Modal -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <!-- Order Success Modal -->
+  <div class="modal-overlay" id="success-overlay">
+    <div class="modal success-modal">
+      <div style="text-align:center;padding:32px">
+        <div style="font-size:64px;margin-bottom:16px">✅</div>
+        <h2 style="margin-bottom:8px;color:#16a34a">Order Placed!</h2>
+        <p style="color:#6b7280;margin-bottom:24px">Your order has been submitted. Admin will review your payment and confirm the order within 24 hours.</p>
+        <p id="order-id-msg" style="font-weight:700;color:#111;margin-bottom:24px"></p>
+        <button class="btn btn-primary" onclick="document.getElementById('success-overlay').style.display='none';navigate('orders')" style="width:100%">View My Orders →</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="/js/farmer.js"></script>
+</body>
+</html>
